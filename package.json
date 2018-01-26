@@ -1,0 +1,33 @@
+{
+  "name": "product-show",
+  "version": "1.0.0",
+  "description": "a products show page",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Jerry-Mr-Xu/ProductShow.git"
+  },
+  "keywords": [
+    "koa",
+    "REST",
+    "nunjucks",
+    "mysql"
+  ],
+  "author": "Jerry",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Jerry-Mr-Xu/ProductShow/issues"
+  },
+  "homepage": "https://github.com/Jerry-Mr-Xu/ProductShow#readme",
+  "dependencies": {
+    "koa": "2.4.1",
+    "koa-bodyparser": "4.2.0",
+    "koa-router": "7.3.0",
+    "nunjucks": "3.0.1",
+    "mime": "2.2.0",
+    "mz": "2.7.0"
+  }
+}
