@@ -1,0 +1,136 @@
+{% extends "base.html" %} {% block main %}
+
+<script>
+
+    $(function () {
+        let vmProductList = new Vue({
+            el: "#product-list",
+            data: {
+                products: []
+            },
+            methods: {
+                deleteProduct: function (productId) {
+                    let that = this;
+                    // 利用Ajax提交删除请求
+                    $.ajax({
+                        type: "delete",
+                        dataType: 'json',
+                        url: '/api/products/' + productId
+                    }).done(result => {
+                        // 删除成功
+                        console.log(`delete product: ${productId} success`);
+                        for (let i = 0; i < that.products.length; i++) {
+                            const product = that.products[i];
+                            if (product.id === result.id) {
+                                that.products.splice(i, 1);
+                                return;
+                            }
+                        }
+                    }).fail((jqXHR, textStatus) => {
+                        alert('Error: ' + jqXHR.status);
+                    });
+                }
+            }
+        });
+
+        // 获取所有产品信息
+        $.getJSON('/api/products').done(result => {
+            vmProductList.products = result.products;
+        }).fail((jqXHR, textStatus) => {
+            alert('Error: ' + jqXHR.status);
+        });
+
+        $('#product-form').submit(function (e) {
+            e.preventDefault();
+            let product = {
+                name: $(this).find('input[name=name]').val(),
+                factory: $(this).find('input[name=factory]').val(),
+                price: parseFloat($(this).find('input[name=price]').val())
+            };
+
+            // 新增产品
+            $.post('/api/products', product).done(result => {
+                vmProductList.products.push(result);
+            }).fail((jqXHR, textStatus) => {
+                alert('Error: ' + jqXHR.status);
+            });
+        });
+    })
+
+</script>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-8">
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    <!-- 面板的标题 -->
+                    <h3 class="panel-title">
+                        <span class="glyphicon glyphicon-th-list"></span> 产品列表</h3>
+                </div>
+
+                <div class="panel-body">
+                    <table id="product-list" class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th style="width:50px"></th>
+                                <th>产品</th>
+                                <th style="width:170px">价格</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="p in products">
+                                <td>
+                                    <img class="media-object" style="width:40px; height:40px;" src="/static/images/icon.png">
+                                </td>
+                                <td>
+                                    <h4 class="media-heading" v-text="p.name"></h4>
+                                    <p>
+                                        <span v-text="p.factory"></span>
+                                        <span>
+                                            <a v-on:click="deleteProduct(p.id)" href="#0">delete</a>
+                                        </span>
+                                    </p>
+                                </td>
+                                <td>
+                                    <p style="font-size:2em">¥
+                                        <span v-text="p.price"></span>
+                                    </p>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    <h3 class="panel-title">
+                        <span class="glyphicon glyphicon-user"></span> 新增一个产品</h3>
+                </div>
+                <div class="panel-body">
+                    <form id="product-form">
+                        <div class="form-group">
+                            <label>产品名</label>
+                            <input class="form-control" type="text" name="name" placeholder="请输入产品名">
+                        </div>
+                        <div class="form-group">
+                            <label>生产厂家</label>
+                            <input class="form-control" type="text" name="factory" placeholder="请输入产品生产厂家">
+                        </div>
+                        <div class="form-group">
+                            <label>产品价格</label>
+                            <input class="form-control" type="number" name="price" placeholder="请输入产品价格">
+                        </div>
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-primary">增加</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
