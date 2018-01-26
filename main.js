@@ -5,10 +5,15 @@ const bodyParser = require('koa-bodyparser');
 const getRouter = require('./url_controller/_manager');
 const putRenderFn = require('./nunjucks_helper');
 const putRestFn = require('./rest_helper').putRestFn;
+const ModelManager = require('./model_controller/_manager');
 
 // 是否正式发布
 const isProduction = process.env.NODE_ENV === 'production';
 const koa = new Koa();
+
+(async () => {
+    await ModelManager.sync();
+})();
 
 koa.use(async (context, next) => {
     // 打印日志
